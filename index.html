@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNESCO Ocean Calc - Kelompok 14</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body {
+            background: linear-gradient(135deg, #006994, #001e36);
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* HERO SECTION (Tampilan Awal) */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 10;
+        }
+        .hero h1 { font-size: 3.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-bottom: 10px; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; }
+        .btn-scroll {
+            padding: 12px 30px;
+            background: #00d2ff;
+            color: #001e36;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+            transition: transform 0.3s;
+        }
+        .btn-scroll:hover { transform: scale(1.1); background: white; }
+
+        /* ANIMASI OMBAK (Background Bergerak) */
+        .ocean { 
+            height: 5%;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: #015871;
+            z-index: 1;
+        }
+        .wave {
+            background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg) repeat-x; 
+            position: absolute;
+            top: -198px;
+            width: 6400px;
+            height: 198px;
+            animation: wave 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
+            transform: translate3d(0, 0, 0);
+        }
+        .wave:nth-of-type(2) {
+            top: -175px;
+            animation: wave 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+            opacity: 1;
+        }
+        @keyframes wave {
+            0% { margin-left: 0; }
+            100% { margin-left: -1600px; }
+        }
+        @keyframes swell {
+            0%, 100% { transform: translate3d(0,-25px,0); }
+            50% { transform: translate3d(0,5px,0); }
+        }
+
+        /* CALCULATOR SECTION */
+        .calc-container {
+            display: flex;
+            justify-content: center;
+            padding: 100px 20px;
+            position: relative;
+            z-index: 20;
+            background: #f0f8ff; /* Pasir putih look */
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px); /* Efek Kaca */
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 700px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .card h2 { color: #006994; margin-bottom: 20px; border-bottom: 2px solid #00d2ff; display: inline-block; }
+        
+        label { margin-top: 15px; display: block; font-weight: 600; color: #444; }
+        
+        select, input {
+            width: 100%;
+            padding: 15px;
+            margin-top: 8px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        select:focus, input:focus { border-color: #006994; outline: none; background: #f9fcfd; }
+
+        button.btn-calc {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #006994, #0096c7);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 105, 148, 0.3);
+        }
+        button.btn-calc:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 105, 148, 0.4); }
+
+        /* HASIL */
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e0f7fa;
+            border-radius: 10px;
+            border-left: 8px solid #006994;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        footer { text-align: center; padding: 20px; background: #001e36; color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <div>
+            <h1>🌊 UNESCO OCEAN CALC</h1>
+            <p>Implementasi Algoritma No. 44 (1983) | Kelompok 14</p>
+            <a href="#calculator" class="btn-scroll">Mulai Menghitung ▼</a>
+        </div>
+        
+        <div class="ocean">
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+    </div>
+
+    <div class="calc-container" id="calculator">
+        <div class="card">
+            <h2>🧮 Panel Perhitungan</h2>
+            
+            <label>Pilih Algoritma Fisik:</label>
+            <select id="algoSelect" onchange="updateInputs()">
+                <option value="1">1. Conductivity ➞ Salinity (PSS-78)</option>
+                <option value="2">2. Salinity ➞ Conductivity (Inverse)</option>
+                <option value="3">3. Density & Specific Volume (EOS-80)</option>
+                <option value="4">4. Pressure ➞ Depth Conversion</option>
+                <option value="5">5. Freezing Point Temperature</option>
+                <option value="6">6. Specific Heat of Seawater</option>
+                <option value="7">7. Adiabatic Lapse Rate</option>
+                <option value="8">8. Potential Temperature</option>
+                <option value="9">9. Sound Speed (Chen & Millero)</option>
+            </select>
+
+            <div id="inputArea">
+                <label>Salinity (S) / Ratio (R):</label>
+                <input type="number" id="val1" placeholder="Contoh: 35 atau 1.0...">
+                
+                <label>Temperature (T) &deg;C / Latitude:</label>
+                <input type="number" id="val2" placeholder="Contoh: 25.0...">
+                
+                <label id="lbl3">Pressure (P) decibars:</label>
+                <input type="number" id="val3" placeholder="Contoh: 0 (Permukaan)...">
+            </div>
+
+            <button class="btn-calc" onclick="calculate()">HITUNG SEKARANG</button>
+
+            <div id="result">
+                <h4 style="color:#555; margin-bottom: 5px;">Hasil Perhitungan:</h4>
+                <p id="outputValue" style="font-size: 2rem; font-weight: 700; color: #006994;">-</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Mahakarya Kelompok 14. Dibuat dengan ❤️ dan Kopi untuk OS2103.
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
